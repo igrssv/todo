@@ -2,11 +2,13 @@ package main
 
 import (
 	"log"
+	"os"
 	"todo"
 	"todo/pkg/handler"
 	"todo/pkg/repository"
 	"todo/pkg/servise"
 
+	"github.com/joho/godotenv"
 	_ "github.com/lib/pq" // driver db
 
 	"github.com/spf13/viper"
@@ -16,15 +18,18 @@ func main() {
 	if err := initConfig(); err != nil {
 		log.Fatalf("error init config: %s", err.Error())
 	}
-
+	//init password to env
+	if err := godotenv.Load(); err != nil {
+		log.Fatalf("error loading env: %s", err.Error())
+	}
 	// init db
 	db, err := repository.NewPostgresDB(repository.Config{
-		Host:     "localhost",
-		Port:     "5436",
-		Username: "postgres",
-		Password: "qwerty",
-		DBName:   "postgres",
-		SSLMode:  "disable",
+		Host:     viper.GetString("db.host"),
+		Port:     viper.GetString("db.port"),
+		Username: viper.GetString("db.username"),
+		Password: os.Getenv("DB_PASSWORD"),
+		DBName:   viper.GetString("db.dbname"),
+		SSLMode:  viper.GetString("db.sslmode"),
 	})
 	if err != nil {
 		log.Fatalf("fail connet db: %s", err.Error())
