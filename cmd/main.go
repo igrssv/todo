@@ -7,6 +7,8 @@ import (
 	"todo/pkg/repository"
 	"todo/pkg/servise"
 
+	_ "github.com/lib/pq" // driver db
+
 	"github.com/spf13/viper"
 )
 
@@ -15,8 +17,21 @@ func main() {
 		log.Fatalf("error init config: %s", err.Error())
 	}
 
+	// init db
+	db, err := repository.NewPostgresDB(repository.Config{
+		Host:     "localhost",
+		Port:     "5436",
+		Username: "postgres",
+		Password: "qwerty",
+		DBName:   "postgres",
+		SSLMode:  "disable",
+	})
+	if err != nil {
+		log.Fatalf("fail connet db: %s", err.Error())
+	}
+
 	// init repository, services and handlers
-	repos := repository.NewRepository()
+	repos := repository.NewRepository(db)
 	services := servise.NewServive(repos)
 	handlers := handler.NewHandler(services)
 

@@ -14,6 +14,7 @@ type TodoItem interface {
 type Service struct {
 }
 
+// create new servise
 func NewServive(repository *repository.Repository) *Service {
 	return &Service{}
 }
