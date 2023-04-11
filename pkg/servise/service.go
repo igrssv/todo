@@ -1,8 +1,12 @@
 package servise
 
-import "todo/pkg/repository"
+import (
+	"todo"
+	"todo/pkg/repository"
+)
 
 type Authorization interface {
+	CreateUser(user todo.User) (int, error)
 }
 
 type TodoList interface {
@@ -12,9 +16,14 @@ type TodoItem interface {
 }
 
 type Service struct {
+	Authorization
+	TodoList
+	TodoItem
 }
 
 // create new servise
-func NewServive(repository *repository.Repository) *Service {
-	return &Service{}
+func NewServive(repos *repository.Repository) *Service {
+	return &Service{
+		Authorization: NewAuthService(repos.Authorization),
+	}
 }
