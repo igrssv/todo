@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
 	"todo"
 
 	"github.com/gin-gonic/gin"
@@ -37,7 +38,7 @@ func (h *Handler) createList(c *gin.Context) {
 
 // struct by response get all lists
 type getAllResponse struct {
-	Data []todo.TodoList `json: "data"`
+	Data []todo.TodoList `json:"data"`
 }
 
 func (h *Handler) getAllLists(c *gin.Context) {
@@ -60,6 +61,26 @@ func (h *Handler) getAllLists(c *gin.Context) {
 }
 
 func (h *Handler) getListById(c *gin.Context) {
+	userId, err := getUserId(c)
+	if err != nil {
+		newErrorRespons(c, http.StatusBadGateway, err.Error())
+		return
+	}
+
+	listId, err := strconv.Atoi(c.Param("id")) // return int for param request ":id"
+	if err != nil {
+		newErrorRespons(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	list, err := h.services.GetById(userId, listId)
+
+	if err != nil {
+		newErrorRespons(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, list)
 
 }
 
