@@ -3,9 +3,9 @@ package todo
 import "errors"
 
 type TodoList struct {
-	ID          int    `json:"id" db:"id"`
-	Titel       string `json:"title" db:"title" binding:"required"`
-	Descriprion string `json:"description" db:"description"`
+	Id          int    `json:"id" db:"id"`
+	Title       string `json:"title" db:"title" binding:"required"`
+	Description string `json:"description" db:"description"`
 }
 
 type UserList struct {
@@ -15,25 +15,25 @@ type UserList struct {
 }
 
 type TodoItem struct {
-	Id          int    `json:"id"`
-	Titel       string `json:"Titel"`
-	Descriprion string `json:"description"`
-	Done        bool   `json:"done"`
+	Id          int    `json:"id" db:"id"`
+	Title       string `json:"title" db:"title" binding:"required"`
+	Description string `json:"description" db:"description"`
+	Done        bool   `json:"done" db:"done"`
 }
 
-type ListItem struct {
+type ListsItem struct {
 	Id     int
 	ListId int
-	ItemID int
+	ItemId int
 }
 
 type UpdateListInput struct {
-	Titel       *string `json:"title"`
+	Title       *string `json:"title"`
 	Descriprion *string `json:"description"`
 }
 
 func (i UpdateListInput) Validate() error {
-	if i.Titel == nil && i.Descriprion == nil {
+	if i.Title == nil && i.Descriprion == nil {
 		return errors.New("update strucrure has no values")
 	}
 

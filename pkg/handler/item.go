@@ -27,7 +27,7 @@ func (h *Handler) createItem(c *gin.Context) {
 		return
 	}
 
-	id, err := h.services.CreateItem(userId, listId, input)
+	id, err := h.services.TodoItem.CreateItem(userId, listId, input)
 	if err != nil {
 		newErrorRespons(c, http.StatusInternalServerError, err.Error())
 		return
@@ -39,7 +39,24 @@ func (h *Handler) createItem(c *gin.Context) {
 }
 
 func (h *Handler) getAllItems(c *gin.Context) {
+	userId, err := getUserId(c)
+	if err != nil {
+		newErrorRespons(c, http.StatusBadGateway, err.Error())
+		return
+	}
 
+	listId, err := strconv.Atoi(c.Param("id")) // return int for param request ":id"
+	if err != nil {
+		newErrorRespons(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	items, err := h.services.TodoItem.GetAllItems(userId, listId)
+	if err != nil {
+		newErrorRespons(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.JSON(http.StatusOK, items)
 }
 
 func (h *Handler) getItemById(c *gin.Context) {
