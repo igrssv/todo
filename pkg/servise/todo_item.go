@@ -31,3 +31,7 @@ func (s *TodoItemService) GetAllItems(userId, listId int) ([]todo.TodoItem, erro
 func (s *TodoItemService) GetById(userId, itemId int) (todo.TodoItem, error) {
 	return s.repo.GetById(userId, itemId)
 }
+
+func (s *TodoItemService) DeleteItem(userId, itemId int) error {
+	return s.repo.DeleteItem(userId, itemId)
+}
